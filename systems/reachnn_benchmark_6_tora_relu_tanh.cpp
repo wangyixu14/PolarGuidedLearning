@@ -2,12 +2,14 @@
 #include "../NNTaylor.h"
 #include "../domain_computation.h"
 #include "../dynamics_linearization.h"
+#include "cnpy.h"
 
 using namespace std;
 using namespace flowstar;
 
 int main(int argc, char *argv[])
 {
+	// cout << "here" << endl;
 	intervalNumPrecision = 600;
 
 	// Declaration of the state variables.
@@ -41,7 +43,7 @@ int main(int argc, char *argv[])
 	Computational_Setting setting;
 
 	unsigned int order = stoi(argv[4]);
-
+	// cout << order;
 	// stepsize and order for reachability analysis
 	setting.setFixedStepsize(0.005, order);
 
@@ -70,6 +72,7 @@ int main(int argc, char *argv[])
 	 * Initial set can be a box which is represented by a vector of intervals.
 	 * The i-th component denotes the initial set of the i-th state variable.
 	 */
+	// cout << "here";
 	double w = stod(argv[1]);
 	int steps = stoi(argv[2]);
 	Interval init_x0(-0.76 - w, -0.76 + w), init_x1(-0.44 - w, -0.44 + w), init_x2(0.52 - w, 0.53 + w), init_x3(-0.29 - w, -0.29 + w), init_u(0); //w=0.01
@@ -90,7 +93,7 @@ int main(int argc, char *argv[])
 	Result_of_Reachability result;
 
 	// define the neural network controller
-	string nn_name = "systems_with_networks/reachnn_benchmark_6_tora/nn_6_tora_relu_tanh";
+	string nn_name = "systems_with_networks/reachnn_benchmark_6_tora/nn_test_relu_tanh";
 	NeuralNetwork nn(nn_name);
 
 	unsigned int maxOrder = 15;
@@ -119,17 +122,17 @@ int main(int argc, char *argv[])
 
 	if (if_symbo == 0)
 	{
-		cout << "High order abstraction starts." << endl;
+		// cout << "High order abstraction starts." << endl;
 	}
 	else
 	{
 		cout << "High order abstraction with symbolic remainder starts." << endl;
 	}
-
+	std::vector<double> StepReach;
 	// perform 35 control steps
 	for (int iter = 0; iter < steps; ++iter)
 	{
-		cout << "Step " << iter << " starts.      " << endl;
+		// cout << "Step " << iter << " starts.      " << endl;
 		//vector<Interval> box;
 		//initial_set.intEval(box, order, setting.tm_setting.cutoff_threshold);
 		TaylorModelVec<Real> tmv_input;
@@ -159,7 +162,7 @@ int main(int argc, char *argv[])
 		// cout << "initial_set.domain: " << initial_set.domain[0] << initial_set.domain[1] << endl;
 		Matrix<Interval> rm1(1, 1);
 		tmv_output.Remainder(rm1);
-		cout << "Neural network taylor remainder: " << rm1 << endl;
+		// cout << "Neural network taylor remainder: " << rm1 << endl;
 
 		// taylor
 		// NNTaylor nn_taylor1(nn);
@@ -193,7 +196,7 @@ int main(int argc, char *argv[])
 
 			// initial_set.tmvPre.tms[u_id] = tmv_output.tms[0];
 
-			cout << "TM -- Propagation" << endl;
+			// cout << "TM -- Propagation" << endl;
 		}
 		else
 		{
@@ -205,8 +208,18 @@ int main(int argc, char *argv[])
 
 		if (result.status == COMPLETED_SAFE || result.status == COMPLETED_UNSAFE || result.status == COMPLETED_UNKNOWN)
 		{
+			vector<Interval> end_box;
 			initial_set = result.fp_end_of_time;
-			cout << "Flowpipe taylor remainder: " << initial_set.tmv.tms[0].remainder << "     " << initial_set.tmv.tms[1].remainder << endl;
+			result.fp_end_of_time.intEval(end_box, order, setting.tm_setting.cutoff_threshold);
+			StepReach.push_back(end_box[0].inf());
+			StepReach.push_back(end_box[1].inf());
+			StepReach.push_back(end_box[2].inf());
+			StepReach.push_back(end_box[3].inf());
+			StepReach.push_back(end_box[0].sup());
+			StepReach.push_back(end_box[1].sup());
+			StepReach.push_back(end_box[2].sup());
+			StepReach.push_back(end_box[3].sup());
+			// cout << "Flowpipe taylor remainder: " << initial_set.tmv.tms[0].remainder << "     " << initial_set.tmv.tms[1].remainder << endl;
 		}
 		else
 		{
@@ -254,9 +267,11 @@ int main(int argc, char *argv[])
 		result_output << reach_result << endl;
 		result_output << running_time << endl;
 	}
+	string NUM = argv[6];
+	cnpy::npy_save("StepReach6_"+NUM+".npy", &StepReach[0], {StepReach.size()}, "w");
 	// you need to create a subdir named outputs
 	// the file name is example.m and it is put in the subdir outputs
-	plot_setting.plot_2D_octagon_MATLAB("reachnn_benchmark_6_tora_relu_tanh_" + to_string(if_symbo), result);
+	// plot_setting.plot_2D_octagon_MATLAB("reachnn_benchmark_6_tora_relu_tanh_" + to_string(if_symbo), result);
 
 	return 0;
 }

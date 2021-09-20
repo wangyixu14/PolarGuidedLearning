@@ -2,6 +2,7 @@
 #include "../NNTaylor.h"
 #include "../domain_computation.h"
 #include "../dynamics_linearization.h"
+#include "cnpy.h"
 
 using namespace std;
 using namespace flowstar;
@@ -85,8 +86,9 @@ int main(int argc, char *argv[])
 	// result of the reachability computation
 	Result_of_Reachability result;
 
+	string NUM = argv[6]; 
 	// define the neural network controller
-	string nn_name = "systems_with_networks/reachnn_benchmark_5/nn_5_relu_tanh";
+	string nn_name = "systems_with_networks/reachnn_benchmark_5/nn_test_relu_tanh_"+NUM;
 	NeuralNetwork nn(nn_name);
 
 	unsigned int maxOrder = 15;
@@ -114,17 +116,17 @@ int main(int argc, char *argv[])
 
 	if (if_symbo == 0)
 	{
-		cout << "High order abstraction starts." << endl;
+		// cout << "High order abstraction starts..." << endl;
 	}
 	else
 	{
-		cout << "High order abstraction with symbolic remainder starts." << endl;
+		// cout << "High order abstraction with symbolic remainder starts..." << endl;
 	}
-
+	std::vector<double> StepReach;
 	// perform 35 control steps
 	for (int iter = 0; iter < steps; ++iter)
 	{
-		cout << "Step " << iter << " starts.      " << endl;
+		// cout << "Step " << iter << " starts.      " << endl;
 		//vector<Interval> box;
 		//initial_set.intEval(box, order, setting.tm_setting.cutoff_threshold);
 		TaylorModelVec<Real> tmv_input;
@@ -153,7 +155,7 @@ int main(int argc, char *argv[])
 		// cout << "initial_set.domain: " << initial_set.domain[0] << initial_set.domain[1] << endl;
 		Matrix<Interval> rm1(1, 1);
 		tmv_output.Remainder(rm1);
-		cout << "Neural network taylor remainder: " << rm1 << endl;
+		// cout << "Neural network taylor remainder: " << rm1 << endl;
 
 		// taylor
 		// NNTaylor nn_taylor1(nn);
@@ -187,7 +189,7 @@ int main(int argc, char *argv[])
 
 			// initial_set.tmvPre.tms[u_id] = tmv_output.tms[0];
 
-			cout << "TM -- Propagation" << endl;
+			// cout << "TM -- Propagation" << endl;
 		}
 		else
 		{
@@ -198,9 +200,17 @@ int main(int argc, char *argv[])
 		dynamics.reach(result, setting, initial_set, unsafeSet);
 
 		if (result.status == COMPLETED_SAFE || result.status == COMPLETED_UNSAFE || result.status == COMPLETED_UNKNOWN)
-		{
+		{	
+			vector<Interval> end_box;
 			initial_set = result.fp_end_of_time;
-			cout << "Flowpipe taylor remainder: " << initial_set.tmv.tms[0].remainder << "     " << initial_set.tmv.tms[1].remainder << endl;
+			result.fp_end_of_time.intEval(end_box, order, setting.tm_setting.cutoff_threshold);
+			StepReach.push_back(end_box[0].inf());
+			StepReach.push_back(end_box[1].inf());
+			StepReach.push_back(end_box[2].inf());
+			StepReach.push_back(end_box[0].sup());
+			StepReach.push_back(end_box[1].sup());
+			StepReach.push_back(end_box[2].sup());
+			// cout << "Flowpipe taylor remainder: " << initial_set.tmv.tms[0].remainder << "     " << initial_set.tmv.tms[1].remainder << endl;
 		}
 		else
 		{
@@ -250,7 +260,16 @@ int main(int argc, char *argv[])
 	}
 	// you need to create a subdir named outputs
 	// the file name is example.m and it is put in the subdir outputs
-	plot_setting.plot_2D_octagon_MATLAB("reachnn_benchmark_5_relu_tanh_" + to_string(if_symbo), result);
+	// plot_setting.plot_2D_octagon_MATLAB("reachnn_benchmark_5_relu_tanh_" + to_string(if_symbo), result);
+
+	// StepReach.push_back(end_box[0].inf());
+	// StepReach.push_back(end_box[1].inf());
+	// StepReach.push_back(end_box[2].inf());
+	// StepReach.push_back(end_box[0].sup());
+	// StepReach.push_back(end_box[1].sup());
+	// StepReach.push_back(end_box[2].sup());
+	cnpy::npy_save("StepReach5_"+NUM+".npy", &StepReach[0], {StepReach.size()}, "w");
+	// assert(false);
 
 	return 0;
 }

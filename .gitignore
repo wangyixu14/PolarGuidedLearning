@@ -78,3 +78,11 @@ target/
 
 # temperory data
 *.hdf5
+
+# rum-time numpy dat
+*.npy
+outputs/
+run.py
+systems_with_networks/reachnn_benchmark_6_tora/data/
+systems_with_networks/reachnn_benchmark_5/data/
+systems_with_networks/reachnn_oscillator_benchmark/data/

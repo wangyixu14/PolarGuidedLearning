@@ -2418,12 +2418,12 @@ namespace flowstar
 			if (result_berns.remainder.width() < result_taylor.remainder.width())
 			{
 				result = result_berns;
-				cout << "Berns" << endl;
+				// cout << "Berns" << endl;
 			}
 			else
 			{
 				result = result_taylor;
-				cout << "Taylor" << endl;
+				// cout << "Taylor" << endl;
 			}
 		}
 	}
@@ -2519,12 +2519,12 @@ namespace flowstar
 			if (result_berns.remainder.width() < result_taylor.remainder.width())
 			{
 				result = result_berns;
-				cout << "Berns" << endl;
+				// cout << "Berns" << endl;
 			}
 			else
 			{
 				result = result_taylor;
-				cout << "Taylor" << endl;
+				// cout << "Taylor" << endl;
 			}
 		}
 	}
@@ -4000,8 +4000,8 @@ void TaylorModelVec<DATA_TYPE>::cutoff_normal(Matrix<Interval> & M, const std::v
 
 		for (unsigned int i = 0; i < tms.size(); ++i)
 		{
-			cout << "------"
-				 << "Neuron " << i << " -------" << endl;
+			// cout << "------"
+			// 	 << "Neuron " << i << " -------" << endl;
 			TaylorModel<DATA_TYPE> tmTemp;
 			tms[i].activate(tmTemp, domain, activation_type, taylor_order, bernstein_order, partition_num, cutoff_threshold, setting, if_symb);
 			result.tms.push_back(tmTemp);

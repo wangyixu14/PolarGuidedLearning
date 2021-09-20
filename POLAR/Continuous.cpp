@@ -7640,7 +7640,7 @@ void Plot_Setting::plot_2D_octagon_MATLAB(const std::string &fileName, const Res
 			switch (*safetyIter)
 			{
 			case SAFE:
-				fprintf(plotFile, "'color' , '[0 0.4 0]');\nhold on;\nclear;\n");
+				fprintf(plotFile, "'color' , '[0.8500 0.3250 0.0980]');\nhold on;\nclear;\n");
 				break;
 			case UNSAFE:
 				fprintf(plotFile, "'color' , '[1 0 0]');\nhold on;\nclear;\n");

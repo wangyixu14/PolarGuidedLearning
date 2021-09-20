@@ -392,7 +392,7 @@ void NNTaylor::get_output_tmv(TaylorModelVec<Real> &tmv_output, TaylorModelVec<R
     tmv_all_layer.push_back(tmv_input);
     for (int s = 0; s < this->nn.get_num_of_hidden_layers() + 1; s++)
     {
-        cout << "------------- Layer " << s << " starts. -------------" << endl;
+        // cout << "------------- Layer " << s << " starts. -------------" << endl;
         Layer layer = this->nn.get_layers()[s];
         Matrix<Interval> weight = layer.get_weight();
         Matrix<Interval> bias = layer.get_bias();
@@ -466,7 +466,7 @@ void NNTaylor::get_output_tmv(TaylorModelVec<Real> &tmv_output, TaylorModelVec<R
 
     Interval box;
     tmv_output.tms[0].intEval(box, tmv_domain);
-    cout << "neural network output range by TMP: " << box << endl;
+    // cout << "neural network output range by TMP: " << box << endl;
 }
 
 void NNTaylor::NN_Reach(TaylorModelVec<Real> &tmv_output, TaylorModelVec<Real> &tmv_input, TaylorInfo ti, vector<Interval> &tmv_domain)

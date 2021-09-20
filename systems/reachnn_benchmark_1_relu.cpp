@@ -2,12 +2,29 @@
 #include "../NNTaylor.h"
 #include "../domain_computation.h"
 #include "../dynamics_linearization.h"
+#include "cnpy.h"
+#include <cstdlib>
+#include <cassert>
 
 using namespace std;
 using namespace flowstar;
 
 int main(int argc, char *argv[])
-{
+{	
+	srand(0);
+	std::vector<double> data(10);
+	for(double i = 0; i < 10; i++) {
+		double doubletem = i/7;
+		cout << doubletem<<endl;
+		data[i] = doubletem;
+	}
+
+	cnpy::npy_save("arr1.npy", &data[0], {10}, "w");
+	cnpy::NpyArray newarr = cnpy::npy_load("arr1.npy");
+	double* loaded_date = newarr.data<double>();
+	cout << loaded_date[6] << endl;
+	
+
 	intervalNumPrecision = 2000;
 
 	// Declaration of the state variables.
@@ -35,6 +52,7 @@ int main(int argc, char *argv[])
 	Computational_Setting setting;
 
 	unsigned int order = stoi(argv[4]);
+	cout << order << endl;
 
 	// stepsize and order for reachability analysis
 	setting.setFixedStepsize(0.005, order);
@@ -84,6 +102,7 @@ int main(int argc, char *argv[])
 	// define the neural network controller
 	string nn_name = "systems_with_networks/reachnn_benchmark_1/nn_1_relu";
 	NeuralNetwork nn(nn_name);
+	assert(1+1==1); 
 
 	unsigned int maxOrder = 15;
 	Global_Computation_Setting g_setting;

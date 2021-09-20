@@ -35,6 +35,7 @@ NeuralNetwork::NeuralNetwork(string filename)
     try
     {
         num_of_inputs = stoi(line);
+        // cout << "number of inputs: " << num_of_inputs << endl;
     }
     catch (std::invalid_argument &e)
     {
@@ -53,15 +54,25 @@ NeuralNetwork::NeuralNetwork(string filename)
     {
         getline(input, line);
         network_structure[idx] = stoi(line);
+        // cout << idx << " " << network_structure[idx] << endl;
     }
     network_structure[network_structure.size() - 1] = num_of_outputs;
+    // cout << network_structure[1] << endl; 
 
     // parse the activation function
     std::vector<std::string> activation;
     for (int idx = 0; idx < num_of_hidden_layers + 1; idx++)
     {
-        getline(input, line);
-        activation.push_back(line);
+        // getline(input, line);
+        // cout << line << endl;
+        // activation.push_back(line);
+        if(idx < num_of_hidden_layers){
+            activation.push_back("ReLU");
+        }
+        else{
+            activation.push_back("tanh");
+        }
+        
     }
 
     // Parse the input text file and store weights and bias
@@ -85,6 +96,7 @@ NeuralNetwork::NeuralNetwork(string filename)
         value = stod(line);
         I.set(value);
         bias0[i][0] = I;
+        // cout << "bias as " << value << endl;
     }
     Layer input_layer(num_of_inputs, network_structure[0], activation[0], weight0, bias0);
     // cout << "weight0: " << weight0 << endl;
@@ -110,10 +122,12 @@ NeuralNetwork::NeuralNetwork(string filename)
             value = stod(line);
             I.set(value);
             bias[i][0] = I;
+            // cout << "bias as " << value << endl;
         }
 
         // cout << "weight_" + to_string(layer_idx + 1) + ":" << weight << endl;
         // cout << "bias_" + to_string(layer_idx + 1) + ":" << bias << endl;
+        // cout << activation[layer_idx + 1] << endl;
         Layer hidden_layer(network_structure[layer_idx], network_structure[layer_idx + 1], activation[layer_idx + 1], weight, bias);
         layers.push_back(hidden_layer);
     }
@@ -123,9 +137,10 @@ NeuralNetwork::NeuralNetwork(string filename)
     // cout << value << endl;
     I.set(value);
     offset = I;
+    // cout << "offset as" << value << endl;
     getline(input, line);
     value = stod(line);
-    // cout << value << endl;
+    // cout << "scale factor as" << value << endl;
     I.set(value);
     scale_factor = I;
 }
