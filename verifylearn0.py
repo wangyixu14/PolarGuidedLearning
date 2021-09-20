@@ -143,8 +143,8 @@ def gradient(it, control_param, goalset, unsafeset):
         for i in range(len(reachset)):
             unsafe = unsafe or intersect(reachset[i, :], unsafeset)
         if goalreached and not unsafe:
-            np.savetxt('systems_with_networks/reachnn_oscillator_benchmark/geo/valid/nn_'+ID+str(it)+'_relu_tanh', control_param+pert)
-            save()
+            np.savetxt('systems_with_networks/reachnn_oscillator_benchmark/valid/nn_'+ID+str(it)+'_relu_tanh', control_param+pert)
+            # save()
             assert False
 
         # g1 = W_distance(reachset[-1, :], goalset, printC)
@@ -165,8 +165,8 @@ def gradient(it, control_param, goalset, unsafeset):
         for i in range(len(reachset)):
             unsafe = unsafe or intersect(reachset[i, :], unsafeset)
         if goalreached and not unsafe:
-            np.savetxt('systems_with_networks/reachnn_oscillator_benchmark/geo/valid/nn_'+ID+str(it)+'_relu_tanh', control_param-pert)
-            save()
+            np.savetxt('systems_with_networks/reachnn_oscillator_benchmark/valid/nn_'+ID+str(it)+'_relu_tanh', control_param-pert)
+            # save()
             assert False
 
         # g2 = W_distance(reachset[-1, :], goalset, printC)

@@ -154,8 +154,8 @@ def gradient(it, control_param, goalset, unsafeset, metric):
             unsafe = unsafe or intersect(reachset[i, :], unsafeset)
         # print(goalreached, unsafe)
         if goalreached and not unsafe:
-            np.savetxt('systems_with_networks/reachnn_benchmark_5/valid/newgeo/nn_'+ID+str(it)+'_relu_tanh', control_param+pert)
-            savedata()
+            np.savetxt('systems_with_networks/reachnn_benchmark_5/valid/nn_'+ID+str(it)+'_relu_tanh', control_param+pert)
+            # savedata()
             assert False
 
         g1 = metric(reachset[-1, :], goalset, printC)
@@ -172,8 +172,8 @@ def gradient(it, control_param, goalset, unsafeset, metric):
             unsafe = unsafe or intersect(reachset[i, :], unsafeset)
         # print(goalreached, unsafe)
         if goalreached and not unsafe:
-            np.savetxt('systems_with_networks/reachnn_benchmark_5/valid/newgeo/nn_'+ID+str(it)+'_relu_tanh', control_param-pert)
-            savedata()
+            np.savetxt('systems_with_networks/reachnn_benchmark_5/valid/nn_'+ID+str(it)+'_relu_tanh', control_param-pert)
+            # savedata()
             assert False
 
         g2 = metric(reachset[-1, :], goalset, printC)
@@ -196,7 +196,7 @@ def savedata():
 if __name__ == '__main__':
     goalset = np.array([-0.5, 0.0, -0.2, -0.28, 0.15, 0])
     unsafeset = np.array([-0.1, 0.55, 0.2, 0, 0.6, 0.3])
-    # control_param = get_params()
+    control_param = get_params()
     # np.savetxt('init_control_param', control_param)
 
     global glist
@@ -206,7 +206,7 @@ if __name__ == '__main__':
 
     timelist = []
 
-    control_param = np.loadtxt('init_control_param_5')
+    # control_param = np.loadtxt('init_control_param_5')
     for it in range(60):
         print('------ Here begins ' + str(it) + ' iterations ------')
         start = time.time()

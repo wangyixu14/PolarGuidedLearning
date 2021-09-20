@@ -156,7 +156,7 @@ if __name__ == '__main__':
         # control_param += 0.0005 * safetygrad
         timelist.append(time.time()-start)
 
-    np.save('systems_with_networks/reachnn_benchmark_6_tora/data/glist'+ID+'.npy', np.array(glist))
-    np.save('systems_with_networks/reachnn_benchmark_6_tora/data/slist'+ID+'.npy', np.array(slist))
-    np.save('systems_with_networks/reachnn_benchmark_6_tora/data/time'+ID+'.npy', np.array(timelist))
+    # np.save('systems_with_networks/reachnn_benchmark_6_tora/data/glist'+ID+'.npy', np.array(glist))
+    # np.save('systems_with_networks/reachnn_benchmark_6_tora/data/slist'+ID+'.npy', np.array(slist))
+    # np.save('systems_with_networks/reachnn_benchmark_6_tora/data/time'+ID+'.npy', np.array(timelist))
     
